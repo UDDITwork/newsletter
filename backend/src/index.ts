@@ -42,17 +42,34 @@ setInterval(() => {
 // Run migrations on startup
 async function startServer() {
   try {
+    console.log('Starting server...');
+    console.log('Environment:', env.NODE_ENV);
+    console.log('Port:', env.PORT);
+
     // Run database migrations
+    console.log('Running migrations...');
     await runMigrations();
+    console.log('Migrations completed successfully');
 
     // Start the server
     const port = parseInt(env.PORT);
-    app.listen(port, () => {
-      console.log(`Server running on port ${port}`);
-      console.log(`Environment: ${env.NODE_ENV}`);
+    const server = app.listen(port, '0.0.0.0', () => {
+      console.log(`✓ Server running on http://0.0.0.0:${port}`);
+      console.log(`✓ Environment: ${env.NODE_ENV}`);
+      console.log(`✓ Health check: http://0.0.0.0:${port}/api/health`);
+    });
+
+    // Handle server errors
+    server.on('error', (error: any) => {
+      console.error('Server error:', error);
+      process.exit(1);
     });
   } catch (error) {
     console.error('Failed to start server:', error);
+    if (error instanceof Error) {
+      console.error('Error message:', error.message);
+      console.error('Error stack:', error.stack);
+    }
     process.exit(1);
   }
 }
