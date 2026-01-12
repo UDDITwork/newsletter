@@ -1,18 +1,8 @@
-import { createClient } from '@libsql/client/web';
+import { db } from './client.js';
 import { schema } from './schema.js';
 
-async function migrate() {
-  const url = process.env.TURSO_DATABASE_URL;
-  const authToken = process.env.TURSO_AUTH_TOKEN;
-
-  if (!url || !authToken) {
-    console.error('Missing TURSO_DATABASE_URL or TURSO_AUTH_TOKEN');
-    process.exit(1);
-  }
-
-  const db = createClient({ url, authToken });
-
-  console.log('Running migrations...');
+export async function runMigrations() {
+  console.log('Running database migrations...');
 
   // Split schema into individual statements and execute
   const statements = schema
@@ -23,16 +13,14 @@ async function migrate() {
   for (const statement of statements) {
     try {
       await db.execute(statement);
-      console.log('Executed:', statement.substring(0, 50) + '...');
-    } catch (error) {
-      console.error('Error executing statement:', statement);
-      console.error(error);
-      process.exit(1);
+    } catch (error: any) {
+      // Ignore "table already exists" errors
+      if (!error.message?.includes('already exists')) {
+        console.error('Migration error:', error);
+        throw error;
+      }
     }
   }
 
-  console.log('Migrations completed successfully!');
-  process.exit(0);
+  console.log('Database migrations completed successfully!');
 }
-
-migrate();

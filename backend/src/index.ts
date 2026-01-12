@@ -6,6 +6,7 @@ import authRoutes from './routes/auth.js';
 import newsletterRoutes from './routes/newsletter.js';
 import interactionRoutes from './routes/interactions.js';
 import { cleanupExpiredSessions } from './services/auth.js';
+import { runMigrations } from './db/migrate.js';
 
 const app = express();
 
@@ -38,8 +39,22 @@ setInterval(() => {
   cleanupExpiredSessions().catch(console.error);
 }, 60 * 60 * 1000);
 
-const port = parseInt(env.PORT);
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
-  console.log(`Environment: ${env.NODE_ENV}`);
-});
+// Run migrations on startup
+async function startServer() {
+  try {
+    // Run database migrations
+    await runMigrations();
+
+    // Start the server
+    const port = parseInt(env.PORT);
+    app.listen(port, () => {
+      console.log(`Server running on port ${port}`);
+      console.log(`Environment: ${env.NODE_ENV}`);
+    });
+  } catch (error) {
+    console.error('Failed to start server:', error);
+    process.exit(1);
+  }
+}
+
+startServer();
