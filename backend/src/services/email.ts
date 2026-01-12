@@ -33,7 +33,7 @@ export async function sendEmail(options: EmailOptions): Promise<SendResult> {
       }),
     });
 
-    const data = await response.json();
+    const data = await response.json() as { id?: string; message?: string };
 
     if (!response.ok) {
       console.error('Resend API error:', data);
