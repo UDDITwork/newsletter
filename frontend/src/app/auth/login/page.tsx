@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,7 +10,7 @@ import { requestLogin } from '@/lib/api';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, Mail } from 'lucide-react';
 
-export default function LoginPage() {
+function LoginForm() {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
@@ -48,71 +48,75 @@ export default function LoginPage() {
 
   if (sent) {
     return (
-      <div className="container mx-auto px-4 py-16">
-        <div className="max-w-md mx-auto">
-          <Card>
-            <CardHeader className="text-center">
-              <div className="mx-auto mb-4 h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
-                <Mail className="h-6 w-6 text-primary" />
-              </div>
-              <CardTitle>Check your email</CardTitle>
-              <CardDescription>
-                We&apos;ve sent a magic link to <strong>{email}</strong>
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="text-center">
-              <p className="text-sm text-muted-foreground mb-4">
-                Click the link in the email to sign in. The link expires in 15 minutes.
-              </p>
-              <Button variant="link" onClick={() => setSent(false)}>
-                Use a different email
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
+      <Card>
+        <CardHeader className="text-center">
+          <div className="mx-auto mb-4 h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
+            <Mail className="h-6 w-6 text-primary" />
+          </div>
+          <CardTitle>Check your email</CardTitle>
+          <CardDescription>
+            We&apos;ve sent a magic link to <strong>{email}</strong>
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="text-center">
+          <p className="text-sm text-muted-foreground mb-4">
+            Click the link in the email to sign in. The link expires in 15 minutes.
+          </p>
+          <Button variant="link" onClick={() => setSent(false)}>
+            Use a different email
+          </Button>
+        </CardContent>
+      </Card>
     );
   }
 
   return (
+    <Card>
+      <CardHeader className="text-center">
+        <CardTitle>Sign in</CardTitle>
+        <CardDescription>
+          Enter your email and we&apos;ll send you a magic link to sign in.
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="email">Email</Label>
+            <Input
+              id="email"
+              type="email"
+              placeholder="you@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              disabled={loading}
+            />
+          </div>
+          <Button type="submit" className="w-full" disabled={loading}>
+            {loading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Sending...
+              </>
+            ) : (
+              'Send magic link'
+            )}
+          </Button>
+        </form>
+        <p className="text-xs text-center text-muted-foreground mt-4">
+          You need to be subscribed to sign in.
+        </p>
+      </CardContent>
+    </Card>
+  );
+}
+
+export default function LoginPage() {
+  return (
     <div className="container mx-auto px-4 py-16">
       <div className="max-w-md mx-auto">
-        <Card>
-          <CardHeader className="text-center">
-            <CardTitle>Sign in</CardTitle>
-            <CardDescription>
-              Enter your email and we&apos;ll send you a magic link to sign in.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="you@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  disabled={loading}
-                />
-              </div>
-              <Button type="submit" className="w-full" disabled={loading}>
-                {loading ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Sending...
-                  </>
-                ) : (
-                  'Send magic link'
-                )}
-              </Button>
-            </form>
-            <p className="text-xs text-center text-muted-foreground mt-4">
-              You need to be subscribed to sign in.
-            </p>
-          </CardContent>
-        </Card>
+        <Suspense fallback={<div className="text-center"><Loader2 className="h-8 w-8 animate-spin mx-auto" /></div>}>
+          <LoginForm />
+        </Suspense>
       </div>
     </div>
   );

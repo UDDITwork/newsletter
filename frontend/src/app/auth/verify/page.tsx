@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -9,7 +9,7 @@ import { useAuth } from '@/hooks/use-auth';
 import { Loader2, CheckCircle, XCircle } from 'lucide-react';
 import Link from 'next/link';
 
-export default function VerifyPage() {
+function VerifyContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { refresh } = useAuth();
@@ -44,46 +44,54 @@ export default function VerifyPage() {
   }, [token, returnUrl, router, refresh]);
 
   return (
+    <Card>
+      <CardHeader className="text-center">
+        {status === 'loading' && (
+          <>
+            <div className="mx-auto mb-4">
+              <Loader2 className="h-12 w-12 animate-spin text-primary" />
+            </div>
+            <CardTitle>Verifying...</CardTitle>
+            <CardDescription>Please wait while we sign you in.</CardDescription>
+          </>
+        )}
+        {status === 'success' && (
+          <>
+            <div className="mx-auto mb-4">
+              <CheckCircle className="h-12 w-12 text-green-500" />
+            </div>
+            <CardTitle>You&apos;re signed in!</CardTitle>
+            <CardDescription>Redirecting you now...</CardDescription>
+          </>
+        )}
+        {status === 'error' && (
+          <>
+            <div className="mx-auto mb-4">
+              <XCircle className="h-12 w-12 text-red-500" />
+            </div>
+            <CardTitle>Verification failed</CardTitle>
+            <CardDescription>{error}</CardDescription>
+          </>
+        )}
+      </CardHeader>
+      {status === 'error' && (
+        <CardContent className="text-center">
+          <Button asChild>
+            <Link href="/auth/login">Try again</Link>
+          </Button>
+        </CardContent>
+      )}
+    </Card>
+  );
+}
+
+export default function VerifyPage() {
+  return (
     <div className="container mx-auto px-4 py-16">
       <div className="max-w-md mx-auto">
-        <Card>
-          <CardHeader className="text-center">
-            {status === 'loading' && (
-              <>
-                <div className="mx-auto mb-4">
-                  <Loader2 className="h-12 w-12 animate-spin text-primary" />
-                </div>
-                <CardTitle>Verifying...</CardTitle>
-                <CardDescription>Please wait while we sign you in.</CardDescription>
-              </>
-            )}
-            {status === 'success' && (
-              <>
-                <div className="mx-auto mb-4">
-                  <CheckCircle className="h-12 w-12 text-green-500" />
-                </div>
-                <CardTitle>You&apos;re signed in!</CardTitle>
-                <CardDescription>Redirecting you now...</CardDescription>
-              </>
-            )}
-            {status === 'error' && (
-              <>
-                <div className="mx-auto mb-4">
-                  <XCircle className="h-12 w-12 text-red-500" />
-                </div>
-                <CardTitle>Verification failed</CardTitle>
-                <CardDescription>{error}</CardDescription>
-              </>
-            )}
-          </CardHeader>
-          {status === 'error' && (
-            <CardContent className="text-center">
-              <Button asChild>
-                <Link href="/auth/login">Try again</Link>
-              </Button>
-            </CardContent>
-          )}
-        </Card>
+        <Suspense fallback={<div className="text-center"><Loader2 className="h-8 w-8 animate-spin mx-auto" /></div>}>
+          <VerifyContent />
+        </Suspense>
       </div>
     </div>
   );
