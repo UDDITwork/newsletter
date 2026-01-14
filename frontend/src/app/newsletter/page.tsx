@@ -1,11 +1,11 @@
-import { getNewsletters } from '@/lib/api';
+import { getNewsletters, Newsletter } from '@/lib/api';
 import { NewsletterCard } from '@/components/newsletter-card';
 
 export const revalidate = 60; // Revalidate every 60 seconds
 
 export default async function NewsletterListPage() {
-  let newsletters = [];
-  let error = null;
+  let newsletters: Newsletter[] = [];
+  let error: string | null = null;
 
   try {
     const data = await getNewsletters(1, 20);
