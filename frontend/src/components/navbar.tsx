@@ -25,6 +25,12 @@ export function Navbar() {
               >
                 Archive
               </Link>
+              <Link
+                href="/admin"
+                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Admin
+              </Link>
             </div>
           </div>
 
@@ -68,6 +74,13 @@ export function Navbar() {
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Archive
+              </Link>
+              <Link
+                href="/admin"
+                className="text-sm font-medium text-muted-foreground hover:text-foreground"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Admin
               </Link>
               {loading ? null : user ? (
                 <>

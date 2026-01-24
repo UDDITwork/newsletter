@@ -10,7 +10,7 @@ on:
 
 env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
-  SERVICE_NAME: news
+  SERVICE_NAME: newsletters
   REGION: europe-west1
 
 jobs:

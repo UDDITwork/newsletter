@@ -5,6 +5,7 @@ import { env } from './config/env.js';
 import authRoutes from './routes/auth.js';
 import newsletterRoutes from './routes/newsletter.js';
 import interactionRoutes from './routes/interactions.js';
+import adminRoutes from './routes/admin.js';
 import { cleanupExpiredSessions } from './services/auth.js';
 import { runMigrations } from './db/migrate.js';
 
@@ -27,6 +28,7 @@ app.get('/api/health', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/newsletter', newsletterRoutes);
 app.use('/api/newsletter', interactionRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Error handler
 app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {

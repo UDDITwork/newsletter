@@ -149,3 +149,43 @@ export async function addComment(slug: string, content: string, parentId?: numbe
     body: JSON.stringify({ content, parentId }),
   });
 }
+
+// Admin functions
+export interface AdminNewsletter {
+  id: number;
+  title: string;
+  slug: string;
+  status: string;
+  created_at: number;
+  sent_at: number | null;
+}
+
+export interface AdminSubscriber {
+  id: number;
+  email: string;
+  name: string | null;
+  status: string;
+  subscribe_date: number;
+}
+
+export async function getAdminNewsletters() {
+  return fetchApi<{ newsletters: AdminNewsletter[]; total: number }>('/admin/newsletters');
+}
+
+export async function getAdminSubscribers() {
+  return fetchApi<{ subscribers: AdminSubscriber[]; total: number }>('/admin/subscribers');
+}
+
+export async function sendNewsletter(id: number) {
+  return fetchApi<{
+    message: string;
+    newsletterId: number;
+    newsletterTitle: string;
+    totalSubscribers: number;
+    successCount: number;
+    failureCount: number;
+    results: { email: string; success: boolean; error?: string }[];
+  }>(`/admin/send-newsletter/${id}`, {
+    method: 'POST',
+  });
+}
