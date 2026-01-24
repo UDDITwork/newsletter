@@ -1,8 +1,15 @@
 import { Router, Request, Response } from 'express';
 import { z } from 'zod';
+import { marked } from 'marked';
 import { db } from '../db/client.js';
 import { generateConfirmToken, generateUnsubscribeToken } from '../utils/tokens.js';
 import { sendConfirmationEmail, sendUnsubscribeConfirmationEmail } from '../services/email.js';
+
+// Configure marked for proper rendering
+marked.setOptions({
+  breaks: true,
+  gfm: true,
+});
 
 const router = Router();
 
@@ -231,9 +238,14 @@ router.get('/:slug', async (req: Request, res: Response) => {
 
     const newsletter = result.rows[0];
 
+    // Convert markdown content to HTML
+    const markdownContent = newsletter.content as string;
+    const htmlContent = markdownContent ? await marked.parse(markdownContent) : '';
+
     res.json({
       newsletter: {
         ...newsletter,
+        content: htmlContent,
         tags: JSON.parse((newsletter.tags as string) || '[]'),
       },
     });

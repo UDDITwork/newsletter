@@ -10,13 +10,13 @@ interface NewsletterCardProps {
 export function NewsletterCard({ newsletter }: NewsletterCardProps) {
   return (
     <Link href={`/newsletter/${newsletter.slug}`}>
-      <Card className="h-full hover:shadow-md transition-shadow cursor-pointer">
+      <Card className="h-full hover:translate-y-[-4px] cursor-pointer overflow-hidden">
         {newsletter.cover_image && (
-          <div className="aspect-video relative overflow-hidden rounded-t-lg">
+          <div className="aspect-video relative overflow-hidden">
             <img
               src={newsletter.cover_image}
               alt={newsletter.title}
-              className="object-cover w-full h-full"
+              className="object-cover w-full h-full transition-transform duration-300 hover:scale-105"
             />
           </div>
         )}
@@ -26,11 +26,11 @@ export function NewsletterCard({ newsletter }: NewsletterCardProps) {
               {formatDate(newsletter.created_at)}
             </time>
           </div>
-          <CardTitle className="line-clamp-2">{newsletter.title}</CardTitle>
+          <CardTitle className="line-clamp-2 text-lg">{newsletter.title}</CardTitle>
         </CardHeader>
         {newsletter.excerpt && (
           <CardContent>
-            <p className="text-muted-foreground line-clamp-3">
+            <p className="text-muted-foreground line-clamp-3 text-sm">
               {newsletter.excerpt}
             </p>
           </CardContent>
@@ -41,7 +41,7 @@ export function NewsletterCard({ newsletter }: NewsletterCardProps) {
               {newsletter.tags.map((tag) => (
                 <span
                   key={tag}
-                  className="px-2 py-1 text-xs bg-secondary rounded-full"
+                  className="glass-tag px-3 py-1 text-xs rounded-full font-medium"
                 >
                   {tag}
                 </span>

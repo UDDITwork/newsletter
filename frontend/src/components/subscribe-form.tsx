@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { subscribe } from '@/lib/api';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2 } from 'lucide-react';
+import { Loader2, MailCheck } from 'lucide-react';
 
 export function SubscribeForm() {
   const [email, setEmail] = useState('');
@@ -51,10 +51,12 @@ export function SubscribeForm() {
 
   if (success) {
     return (
-      <div className="rounded-lg border bg-card p-6 text-center">
-        <div className="mb-4 text-4xl">✉️</div>
+      <div className="text-center">
+        <div className="w-16 h-16 rounded-full bg-gradient-to-br from-green-400/20 to-emerald-500/20 flex items-center justify-center mx-auto mb-4">
+          <MailCheck className="w-8 h-8 text-green-600" />
+        </div>
         <h3 className="text-lg font-semibold mb-2">Check your inbox!</h3>
-        <p className="text-muted-foreground">
+        <p className="text-muted-foreground text-sm">
           We&apos;ve sent you a confirmation email. Click the link to confirm your subscription.
         </p>
         <Button

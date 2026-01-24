@@ -24,7 +24,7 @@ export default function RootLayout({
           <div className="min-h-screen flex flex-col">
             <Navbar />
             <main className="flex-1">{children}</main>
-            <footer className="border-t py-8 mt-auto">
+            <footer className="glass-footer py-8 mt-auto">
               <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
                 <p>&copy; {new Date().getFullYear()} Newsletter. All rights reserved.</p>
               </div>
