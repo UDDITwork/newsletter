@@ -1,8 +1,15 @@
 import { Router, Request, Response } from 'express';
 import { db } from '../db/client.js';
 import { sendNewsletterEmail } from '../services/email.js';
+import { marked } from 'marked';
 
 const router = Router();
+
+// Configure marked for better email rendering
+marked.setOptions({
+  breaks: true,
+  gfm: true,
+});
 
 // POST /api/admin/send-newsletter/:id - Send newsletter to all active subscribers
 router.post('/send-newsletter/:id', async (req: Request, res: Response) => {
@@ -38,6 +45,37 @@ router.post('/send-newsletter/:id', async (req: Request, res: Response) => {
     let failureCount = 0;
     const results: { email: string; success: boolean; error?: string }[] = [];
 
+    // Convert markdown content to HTML
+    const markdownContent = newsletter.content as string;
+    const htmlContent = await marked.parse(markdownContent);
+
+    // Wrap in styled container for better email presentation
+    const styledHtmlContent = `
+      <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.8; color: #1a1a1a; max-width: 680px; margin: 0 auto;">
+        <style>
+          h1 { font-size: 28px; font-weight: 700; margin: 32px 0 16px 0; color: #111; }
+          h2 { font-size: 22px; font-weight: 600; margin: 28px 0 12px 0; color: #222; border-bottom: 2px solid #e5e7eb; padding-bottom: 8px; }
+          h3 { font-size: 18px; font-weight: 600; margin: 24px 0 10px 0; color: #333; }
+          p { margin: 16px 0; font-size: 16px; }
+          ul, ol { margin: 16px 0; padding-left: 24px; }
+          li { margin: 8px 0; }
+          code { background: #f3f4f6; padding: 2px 6px; border-radius: 4px; font-family: 'Fira Code', Consolas, monospace; font-size: 14px; }
+          pre { background: #1e1e1e; color: #d4d4d4; padding: 16px; border-radius: 8px; overflow-x: auto; margin: 20px 0; }
+          pre code { background: none; padding: 0; color: inherit; }
+          blockquote { border-left: 4px solid #667eea; padding-left: 16px; margin: 20px 0; color: #4b5563; font-style: italic; }
+          table { border-collapse: collapse; width: 100%; margin: 20px 0; }
+          th, td { border: 1px solid #e5e7eb; padding: 12px; text-align: left; }
+          th { background: #f9fafb; font-weight: 600; }
+          img { max-width: 100%; height: auto; border-radius: 8px; margin: 20px 0; }
+          a { color: #667eea; text-decoration: none; }
+          a:hover { text-decoration: underline; }
+          hr { border: none; border-top: 1px solid #e5e7eb; margin: 32px 0; }
+          strong { font-weight: 600; }
+        </style>
+        ${htmlContent}
+      </div>
+    `;
+
     // Send email to each subscriber
     for (const subscriber of subscribers) {
       const email = subscriber.email as string;
@@ -48,7 +86,7 @@ router.post('/send-newsletter/:id', async (req: Request, res: Response) => {
       const result = await sendNewsletterEmail(
         email,
         newsletter.subject as string,
-        newsletter.content as string,
+        styledHtmlContent,
         unsubscribeToken
       );
 
