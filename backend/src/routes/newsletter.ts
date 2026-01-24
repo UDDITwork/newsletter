@@ -171,7 +171,7 @@ router.get('/unsubscribe/:token', async (req: Request, res: Response) => {
 });
 
 // GET /api/newsletters - List all published newsletters
-router.get('s', async (req: Request, res: Response) => {
+router.get('/', async (req: Request, res: Response) => {
   try {
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 10;

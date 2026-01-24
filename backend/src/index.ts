@@ -41,6 +41,7 @@ app.get('/api/health', (req, res) => {
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/newsletter', newsletterRoutes);
+app.use('/api/newsletters', newsletterRoutes);  // Also mount at /api/newsletters for list endpoint
 app.use('/api/newsletter', interactionRoutes);
 app.use('/api/admin', adminRoutes);
 
