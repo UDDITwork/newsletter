@@ -158,4 +158,36 @@ router.get('/newsletters', async (req: Request, res: Response) => {
   }
 });
 
+// DELETE /api/admin/newsletter/:id - Delete a newsletter
+router.delete('/newsletter/:id', async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    // Delete related data first (likes, comments)
+    await db.execute({
+      sql: 'DELETE FROM likes WHERE newsletter_id = ?',
+      args: [id],
+    });
+
+    await db.execute({
+      sql: 'DELETE FROM comments WHERE newsletter_id = ?',
+      args: [id],
+    });
+
+    // Delete the newsletter
+    const result = await db.execute({
+      sql: 'DELETE FROM newsletters WHERE id = ?',
+      args: [id],
+    });
+
+    res.json({
+      success: true,
+      message: 'Newsletter deleted successfully',
+    });
+  } catch (error) {
+    console.error('Delete newsletter error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 export default router;

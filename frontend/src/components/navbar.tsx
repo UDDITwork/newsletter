@@ -15,7 +15,7 @@ export function Navbar() {
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center gap-8">
-            <Link href="/" className="text-xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
+            <Link href="/" className="text-xl font-bold text-foreground">
               Newsletter
             </Link>
             <div className="hidden md:flex items-center gap-6">

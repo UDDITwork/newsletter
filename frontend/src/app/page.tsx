@@ -19,8 +19,8 @@ export default function Home() {
 
         <div className="mt-16 grid md:grid-cols-3 gap-6 text-left">
           <div className="glass rounded-xl p-6 hover:translate-y-[-4px] transition-all duration-300">
-            <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary/20 to-purple-500/20 flex items-center justify-center mb-4">
-              <Mail className="w-6 h-6 text-primary" />
+            <div className="w-12 h-12 rounded-lg bg-black/5 flex items-center justify-center mb-4">
+              <Mail className="w-6 h-6 text-foreground" />
             </div>
             <h3 className="font-semibold mb-2">Weekly Updates</h3>
             <p className="text-sm text-muted-foreground">
@@ -28,8 +28,8 @@ export default function Home() {
             </p>
           </div>
           <div className="glass rounded-xl p-6 hover:translate-y-[-4px] transition-all duration-300">
-            <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary/20 to-purple-500/20 flex items-center justify-center mb-4">
-              <Shield className="w-6 h-6 text-primary" />
+            <div className="w-12 h-12 rounded-lg bg-black/5 flex items-center justify-center mb-4">
+              <Shield className="w-6 h-6 text-foreground" />
             </div>
             <h3 className="font-semibold mb-2">No Spam</h3>
             <p className="text-sm text-muted-foreground">
@@ -37,8 +37,8 @@ export default function Home() {
             </p>
           </div>
           <div className="glass rounded-xl p-6 hover:translate-y-[-4px] transition-all duration-300">
-            <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary/20 to-purple-500/20 flex items-center justify-center mb-4">
-              <MessageCircle className="w-6 h-6 text-primary" />
+            <div className="w-12 h-12 rounded-lg bg-black/5 flex items-center justify-center mb-4">
+              <MessageCircle className="w-6 h-6 text-foreground" />
             </div>
             <h3 className="font-semibold mb-2">Join the Discussion</h3>
             <p className="text-sm text-muted-foreground">
