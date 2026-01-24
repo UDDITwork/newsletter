@@ -12,8 +12,22 @@ import { runMigrations } from './db/migrate.js';
 const app = express();
 
 // Middleware
+const allowedOrigins = [
+  env.FRONTEND_URL,
+  'https://newsletter.uddit.site',
+];
+
 app.use(cors({
-  origin: env.FRONTEND_URL,
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps or curl)
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.includes(origin)) {
+      callback(null, origin);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
 }));
 app.use(express.json());
